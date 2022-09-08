@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Numerical Methods</title>
+</head>
+<body>
+    <div id="menu-toggler" class="no-select">
+        <div class="bar no-select"></div>
+    </div>
+    <header>
+        <div class="logo">numerical methods</div>
+        <ul class="nav-links">
+            <div class="menu">
+                <li class="bracketing-methods">
+                    <span>bracketing-methods</span>
+                    <ul class="dropdown">
+                        <li><span>bisection method</span></li>
+                        <li><span>false-position method</span></li>
+                    </ul>
+                </li>
+                <li class="open-methods">
+                    <span>open-methods</span>
+                    <ul class="dropdown">
+                        <li><span>simple fixed-point iteration</span></li>
+                        <li><span>newton-raphson method</span></li>
+                        <li><span>secant method</span></li>
+                    </ul>
+                </li>
+                <li class="roots-of-polynonials">
+                    <span>roots of polynomials</span>
+                </li>
+            </div>
+        </ul>
+    </header>
+    <main>
+        <span id="method-name">bisection method</span>
+        <div class="method">
+            <div class="input-wrapper">
+                <div class="function-wrapper">
+                    <label for="function">f(x): </label>
+                    <input type="text">
+                </div>
+                <div class="interval-wrapper">
+                    <label for="xl">x<sub>l</sub>: </label>
+                    <input type="text">
+                    <br>
+                    <label for="xu">x<sub>u</sub>: </label>
+                    <input type="text">
+                </div>
+                <div class="repetitions-wrapper">
+                    <label for="repetitions">Repetitions: </label>
+                    <input type="number" class="repetitions">
+                </div>
+            </div>
+            <button class="calculate">Calculate</button>
+        </div>
+        <table id="results"></table>
+    </main>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
