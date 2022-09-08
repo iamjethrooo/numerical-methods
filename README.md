@@ -1,2 +1,2 @@
 # numerical-methods
-A calculator for numerical methods.
+A calculator website for numerical methods.
