@@ -18,16 +18,16 @@
                 <li class="bracketing-methods">
                     <span>bracketing-methods</span>
                     <ul class="dropdown">
-                        <li><span>bisection method</span></li>
-                        <li><span>false-position method</span></li>
+                        <li><span id="bisection">bisection method</span></li>
+                        <li><span id="false-position">false-position method</span></li>
                     </ul>
                 </li>
                 <li class="open-methods">
                     <span>open-methods</span>
                     <ul class="dropdown">
-                        <li><span>simple fixed-point iteration</span></li>
-                        <li><span>newton-raphson method</span></li>
-                        <li><span>secant method</span></li>
+                        <li><span id="fixed-point">simple fixed-point iteration</span></li>
+                        <li><span id="newton-raphson">newton-raphson method</span></li>
+                        <li><span id="secant">secant method</span></li>
                     </ul>
                 </li>
                 <li class="roots-of-polynonials">
@@ -42,25 +42,26 @@
             <div class="input-wrapper">
                 <div class="function-wrapper">
                     <label for="function">f(x): </label>
-                    <input type="text">
                 </div>
                 <div class="interval-wrapper">
                     <label for="xl">x<sub>l</sub>: </label>
-                    <input type="text">
+                    <input id="xl" type="text">
                     <br>
                     <label for="xu">x<sub>u</sub>: </label>
-                    <input type="text">
+                    <input id="xu" type="text">
                 </div>
                 <div class="repetitions-wrapper">
                     <label for="repetitions">Repetitions: </label>
-                    <input type="number" class="repetitions">
+                    <input id="repetitions" type="number" >
                 </div>
             </div>
-            <button class="calculate">Calculate</button>
+            <button id="calculate">Calculate</button>
         </div>
         <table id="results"></table>
     </main>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="//unpkg.com/@cortex-js/compute-engine"></script>
+    <script src="https://unpkg.com/mathlive"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
