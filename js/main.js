@@ -1,4 +1,13 @@
 $(document).ready(function() {
+    let methodButtons = $(".method");
+    let methodName = $("#method-name");
+    methodName.textContent = "hahahha"
+    console.log(methodName);
+    methodButtons.on("click", (b) => {
+        console.log(b.target.textContent);
+        methodName.text(b.target.textContent);
+    })
+
     const ce = new ComputeEngine.ComputeEngine();
     ce.numericMode = "machine";
 
@@ -66,7 +75,7 @@ $(document).ready(function() {
         let fxr = fn.N().json;
         fxr = parseFloat(fxr.toFixed(6));
 
-        let ea = 100;
+        let ea = "100%";
 
         let iterations = [[xl, xu, fxl, fxu, xr, fxr, ea]];
         for (let i = 0; i < repetitions.val(); i++) {
@@ -100,7 +109,7 @@ $(document).ready(function() {
             fxr = parseFloat(fxr.toFixed(6));
 
             ea = Math.abs((xr-xro)/xr) * 100;
-            ea = parseFloat(ea.toFixed(4));
+            ea = parseFloat(ea.toFixed(4)) + "%";
 
             iterations.push([xl, xu, fxl, fxu, xr, fxr, ea]);
         }
@@ -119,3 +128,7 @@ $(document).ready(function() {
 
 
 });
+
+function bisectionMethod() {
+
+}
