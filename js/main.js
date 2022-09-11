@@ -15,7 +15,9 @@ $(document).ready(function() {
 
     // Function code
     let functionText = $("#function");
+    let derivativeText;
     let formula = "";
+    let derivative = "";
     functionText.on('input', (ev) => {
         formula = (ev.target.getValue());
     });
@@ -58,7 +60,7 @@ $(document).ready(function() {
             </div>`);
 
             tableHeaders = ['x<sub>l</sub>', 'x<sub>u</sub>', 'f(x<sub>l</sub>)', 'f(x<sub>u</sub>)', 'x<sub>r</sub>', 'f(x<sub>r</sub>)', 'ε<sub>a</sub>'];
-        } else if (currentMethod == "fixed-point") {
+        } else if (currentMethod == "fixed-point" || currentMethod == "secant") {
             inputWrapper.prepend(`
                 <div class="input">
                     <div class="function-wrapper">
@@ -81,6 +83,41 @@ $(document).ready(function() {
                     </div>
                 </div>`);
             tableHeaders = ['x<sub>i</sub>', 'ε<sub>a</sub>'];
+        } else if (currentMethod == "newton-raphson") {
+            inputWrapper.prepend(`
+            <div class="input">
+                <div class="function-wrapper">
+                    <div class="function">
+                        <label for="function">f(x): </label>
+                        <math-field id="function"></math-field>
+                    </div>
+                    <div class="function">
+                        <label for="derivative">f'(x): </label>
+                        <math-field id="derivative"></math-field>
+                    </div>
+                </div>
+
+            </div>
+            <div class="input">
+                <div class="interval-wrapper">
+                    <div class="interval">
+                        <label for="xi">x<sub>i</sub>: </label>
+                        <input id="xi" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="input">
+                <div class="repetitions-wrapper">
+                    <label for="repetitions">Repetitions: </label>
+                    <input id="repetitions" type="number" >
+                </div>
+            </div>`);
+            tableHeaders = ['x<sub>i</sub>', 'ε<sub>a</sub>'];
+            derivativeText = $("#derivative");
+            derivativeText.on('input', (ev) => {
+                derivative = (ev.target.getValue());
+            });
+
         }
         // Re-add action listener
         functionText = $("#function");
@@ -128,6 +165,8 @@ $(document).ready(function() {
             case "fixed-point":
                 iterations = fixedPoint(ce, formula, $("#xi").val(), repetitions);
                 break;
+            case "newton-raphson":
+                iterations = newtonRaphson(ce, formula, derivative, $("#xi").val(), repetitions);
             default:
                 break;
         }
@@ -313,6 +352,42 @@ function fixedPoint(ce, formula, xi, repetitions) {
         fn = fn.subs({x: ce.box(xi)});
         xi = parseFloat(fn.machineValue);
         xi = parseFloat(xi.toFixed(6));
+
+        ea = Math.abs((xi-xio)/xi) * 100;
+        ea = parseFloat(ea.toFixed(4)) + "%";
+
+        iterations.push([xi, ea]);
+    }
+
+    return iterations;
+}
+
+function newtonRaphson(ce, formula, derivative, xi, repetitions) {
+    let iterations = [];
+
+    // Clear table data
+    $(`.table-data`).empty();
+
+    xi = parseFloat(xi);
+
+    let ea = "100%";
+    iterations = [[xi, ea]];
+    for (let i = 0; i < repetitions; i++) {
+        if (i == 0) continue;
+
+        let xio = xi;
+
+        let fn = ce.parse(formula);
+        fn = fn.subs({x : ce.box(xi)});
+        let fxi = parseFloat(fn.machineValue);
+        fxi = parseFloat(fxi.toFixed(6));
+
+        fn = ce.parse(derivative);
+        fn = fn.subs({x : ce.box(xi)});
+        let dxi = parseFloat(fn.machineValue);
+        dxi = parseFloat(dxi.toFixed(6));
+
+        xi = xio - (fxi / dxi);
 
         ea = Math.abs((xi-xio)/xi) * 100;
         ea = parseFloat(ea.toFixed(4)) + "%";

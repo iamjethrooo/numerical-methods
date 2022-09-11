@@ -184,10 +184,11 @@ li {
   cursor: pointer;
 }
 
-.function-wrapper {
+.function, .derivative {
   display: flex;
   align-items: center;
   flex-direction: row;
+  margin-bottom: 2rem;
   width: 100%;
 }
 
