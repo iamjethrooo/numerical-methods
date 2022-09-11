@@ -197,7 +197,7 @@ input {
     box-shadow: 0 0 2rem rgba(0, 0, 0, 0.15);
     border-bottom: 1px solid #dddddd;
     text-align: left;
-    
+
     th, td {
         padding: 0.8rem 1rem;
     }
@@ -206,12 +206,10 @@ input {
         background-color: black;
         color: white;
     }
+}
 
-    tr {
-        &:nth-of-type(even) {
-            background: #eeeeee;
-        }
-    }
+.table-data:nth-of-type(even) {
+    background: #eeeeee;
 }
 
 @media only screen and (min-width: 1024px) {

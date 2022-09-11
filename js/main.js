@@ -51,7 +51,7 @@ $(document).ready(function() {
 
     calculate.on("click", () => {
         // results.empty();
-        $(`#${results.attr("id")} tbody`).empty();
+        $(`.table-data`).empty();
 
         let xl = parseFloat(xli.val());
         let xu = parseFloat(xui.val());
@@ -115,7 +115,7 @@ $(document).ready(function() {
         }
 
         for (let i = 0; i < repetitions.val(); i++) {
-            let tr = $('<tr></tr>');
+            let tr = $('<tr class="table-data"></tr>');
     
             iterations[i].forEach(e => {
                 let th = $(`<td>${e}</td>`);
