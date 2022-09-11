@@ -56,15 +56,37 @@ $(document).ready(function() {
                     <input id="repetitions" type="number" >
                 </div>
             </div>`);
-            
-            // Re-add action listener
-            functionText = $("#function");
-            functionText.on('input', (ev) => {
-                formula = (ev.target.getValue());
-            });
 
             tableHeaders = ['x<sub>l</sub>', 'x<sub>u</sub>', 'f(x<sub>l</sub>)', 'f(x<sub>u</sub>)', 'x<sub>r</sub>', 'f(x<sub>r</sub>)', 'ε<sub>a</sub>'];
+        } else if (currentMethod == "fixed-point") {
+            inputWrapper.prepend(`
+                <div class="input">
+                    <div class="function-wrapper">
+                        <label for="function">f(x): </label>
+                        <math-field id="function"></math-field>
+                    </div>
+                </div>
+                <div class="input">
+                    <div class="interval-wrapper">
+                        <div class="interval">
+                            <label for="xi">x<sub>i</sub>: </label>
+                            <input id="xi" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="input">
+                    <div class="repetitions-wrapper">
+                        <label for="repetitions">Repetitions: </label>
+                        <input id="repetitions" type="number" >
+                    </div>
+                </div>`);
+            tableHeaders = ['x<sub>i</sub>', 'ε<sub>a</sub>'];
         }
+        // Re-add action listener
+        functionText = $("#function");
+        functionText.on('input', (ev) => {
+            formula = (ev.target.getValue());
+        });
 
         results.empty();
         hr = $('<tr></tr>');
@@ -72,10 +94,10 @@ $(document).ready(function() {
             hr.append($(`<th>${e}</th>`));
         });
         results.append(hr);
-    })
+    });
 
     const ce = new ComputeEngine.ComputeEngine();
-    ce.numericMode = 'complex';
+    ce.numericMode = 'machine';
 
     MathLive.renderMathInDocument()
 
@@ -102,6 +124,9 @@ $(document).ready(function() {
                 break;
             case "false-position":
                 iterations = falsePositionMethod(ce, formula, $("#xl").val(), $("#xu").val(), repetitions);
+                break;
+            case "fixed-point":
+                iterations = fixedPoint(ce, formula, $("#xi").val(), repetitions);
                 break;
             default:
                 break;
@@ -135,12 +160,12 @@ function bisectionMethod(ce, formula, xli, xui, repetitions) {
     
     let fn = ce.parse(formula);
     fn = fn.subs({x: ce.box(xl)});
-    let fxl = fn.N().json;
+    let fxl = fn.machineValue;
     fxl = parseFloat(fxl.toFixed(6));
 
     fn = ce.parse(formula);
     fn = fn.subs({x: ce.box(xu)});
-    let fxu  = fn.N().json;
+    let fxu  = fn.machineValue;
     fxu = parseFloat(fxu.toFixed(6));
 
     let xr = (xl + xu) / 2;
@@ -148,7 +173,7 @@ function bisectionMethod(ce, formula, xli, xui, repetitions) {
 
     fn = ce.parse(formula);
     fn = fn.subs({x: ce.box(xr)});
-    let fxr = fn.N().json;
+    let fxr = fn.machineValue;
     fxr = parseFloat(fxr.toFixed(6));
 
     let ea = "100%";
@@ -165,12 +190,12 @@ function bisectionMethod(ce, formula, xli, xui, repetitions) {
 
         fn = ce.parse(formula);
         fn = fn.subs({x: ce.box(xl)});
-        fxl = fn.N().json;
+        fxl = fn.machineValue;
         fxl = parseFloat(fxl.toFixed(6));
 
         fn = ce.parse(formula);
         fn = fn.subs({x: ce.box(xu)});
-        fxu  = fn.N().json;
+        fxu  = fn.machineValue;
         fxu = parseFloat(fxu.toFixed(6));
 
         // xr old
@@ -181,7 +206,7 @@ function bisectionMethod(ce, formula, xli, xui, repetitions) {
 
         fn = ce.parse(formula);
         fn = fn.subs({x: ce.box(xr)});
-        fxr = fn.N().json;
+        fxr = fn.machineValue;
         fxr = parseFloat(fxr.toFixed(6));
 
         ea = Math.abs((xr-xro)/xr) * 100;
@@ -206,12 +231,12 @@ function falsePositionMethod(ce, formula, xli, xui, repetitions) {
     
     let fn = ce.parse(formula);
     fn = fn.subs({x: ce.box(xl)});
-    let fxl = fn.N().json;
+    let fxl = fn.machineValue;
     fxl = parseFloat(fxl.toFixed(6));
 
     fn = ce.parse(formula);
     fn = fn.subs({x: ce.box(xu)});
-    let fxu  = fn.N().json;
+    let fxu  = fn.machineValue;
     fxu = parseFloat(fxu.toFixed(6));
 
     let xr = xu - ((fxu * (xl - xu)) / (fxl - fxu));
@@ -219,7 +244,7 @@ function falsePositionMethod(ce, formula, xli, xui, repetitions) {
 
     fn = ce.parse(formula);
     fn = fn.subs({x: ce.box(xr)});
-    let fxr = parseFloat(fn.N().json);
+    let fxr = parseFloat(fn.machineValue);
     fxr = parseFloat(fxr.toFixed(6));
 
     let ea = "100%";
@@ -236,12 +261,12 @@ function falsePositionMethod(ce, formula, xli, xui, repetitions) {
 
         fn = ce.parse(formula);
         fn = fn.subs({x: ce.box(xl)});
-        fxl = parseFloat(fn.N().json);
+        fxl = parseFloat(fn.machineValue);
         fxl = parseFloat(fxl.toFixed(6));
 
         fn = ce.parse(formula);
         fn = fn.subs({x: ce.box(xu)});
-        fxu = parseFloat(fn.N().json);
+        fxu = parseFloat(fn.machineValue);
         fxu = parseFloat(fxu.toFixed(6));
 
         // xr old
@@ -252,8 +277,8 @@ function falsePositionMethod(ce, formula, xli, xui, repetitions) {
 
         fn = ce.parse(formula);
         fn = fn.subs({x: ce.box(xr)});
-        console.log(fn.N().json);
-        fxr = parseFloat(fn.N().json);
+        console.log(fn.machineValue);
+        fxr = parseFloat(fn.machineValue);
         console.log(fxr.num);
         fxr = parseFloat(fxr.toFixed(6));
 
@@ -262,6 +287,37 @@ function falsePositionMethod(ce, formula, xli, xui, repetitions) {
         ea = parseFloat(ea.toFixed(4)) + "%";
 
         iterations.push([xl, xu, fxl, fxu, xr, fxr, ea]);
+    }
+
+    return iterations;
+}
+
+function fixedPoint(ce, formula, xi, repetitions) {
+    let iterations = [];
+
+    // Clear table data
+    $(`.table-data`).empty();
+
+    xi = parseFloat(xi);
+    
+    let ea = "100%";
+
+    iterations = [[xi, ea]];
+    for (let i = 0; i < repetitions; i++) {
+        if (i == 0) continue;
+
+        // xi old
+        let xio = xi;
+
+        let fn = ce.parse(formula);
+        fn = fn.subs({x: ce.box(xi)});
+        xi = parseFloat(fn.machineValue);
+        xi = parseFloat(xi.toFixed(6));
+
+        ea = Math.abs((xi-xio)/xi) * 100;
+        ea = parseFloat(ea.toFixed(4)) + "%";
+
+        iterations.push([xi, ea]);
     }
 
     return iterations;
