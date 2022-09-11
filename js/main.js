@@ -324,9 +324,7 @@ function falsePositionMethod(ce, formula, xli, xui, repetitions) {
 
         fn = ce.parse(formula);
         fn = fn.subs({x: ce.box(xr)});
-        console.log(fn.machineValue);
         fxr = parseFloat(fn.machineValue);
-        console.log(fxr.num);
         fxr = parseFloat(fxr.toFixed(6));
 
 
@@ -418,38 +416,12 @@ function secant(ce, formula, xi, repetitions) {
 
     let xio = 0;
 
-    /*
-    let fn = ce.parse(formula);
-    fn = fn.subs({x : ce.box(xi)});
-    let fxi = parseFloat(fn.machineValue);
-    fxi = parseFloat(fxi.toFixed(6));
-    console.log(fxi);
-
-    fn = ce.parse(formula);
-    fn = fn.subs({x : ce.box(xio)});
-    let fxio = parseFloat(fn.machineValue);
-    fxio = parseFloat(fxio.toFixed(6));
-    console.log(fxio);
-
-    // Temporary xi
-    let xit = xi - ((fxi * (xio - xi)) / (fxio - fxi));
-    xio = xi;
-    xi = xit.toFixed(6);
-
-    ea = Math.abs((xi-xio)/xi) * 100;
-    console.log(`xi: ${xi}, xio: ${xio}`);
-    ea = parseFloat(ea.toFixed(4)) + "%";
-    console.log(ea);
-
-    iterations.push([xi, ea]);
-    */
     for (let i = 0; i < repetitions; i++) {
         if (i == 0) continue;
         if (i == 1) xio == 0;
 
         let fn = ce.parse(formula);
         fn = fn.subs({x : ce.box(xi)});
-        console.log(fn);
         let fxi = parseFloat(fn.machineValue);
         fxi = parseFloat(fxi.toFixed(6));
     
@@ -459,11 +431,9 @@ function secant(ce, formula, xi, repetitions) {
         fxio = parseFloat(fxio.toFixed(6));
     
         // Temporary xi
-        console.log(`xi: ${xi}, xio: ${xio}, fxi: ${fxi}, fxio: ${fxio}`);
         let xit = xi - ((fxi * (xio - xi)) / (fxio - fxi));
         xio = xi;
-        xi = xit.toFixed(6);
-        console.log(xi);
+        xi = parseFloat(xit.toFixed(6));
     
         ea = Math.abs((xi-xio)/xi) * 100;
         ea = parseFloat(ea.toFixed(4)) + "%";
