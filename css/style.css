@@ -188,9 +188,23 @@ input {
   padding: 0rem 1rem;
 }
 
-table, th, td {
-  border: 1px solid;
+#results {
   border-collapse: collapse;
+  margin: 2.5rem 0;
+  min-width: 60vw;
+  box-shadow: 0 0 2rem rgba(0, 0, 0, 0.15);
+  border-bottom: 1px solid #dddddd;
+  text-align: left;
+}
+#results th, #results td {
+  padding: 0.8rem 1rem;
+}
+#results tr th {
+  background-color: black;
+  color: white;
+}
+#results tr:nth-of-type(even) {
+  background: #eeeeee;
 }
 
 @media only screen and (min-width: 1024px) {
