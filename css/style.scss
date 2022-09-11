@@ -220,9 +220,12 @@ input {
 
 .interval {
     display: flex;
+    justify-content: space-between;
     align-items: center;
+    width: 100%;
+    padding: 0 2.5rem;
     input {
-        flex-grow: 0.6;
+        flex-grow: 100;
     }
 }
 
