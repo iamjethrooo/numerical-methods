@@ -36,8 +36,10 @@ $(document).ready(function() {
             inputWrapper.prepend(`
             <div class="input">
                 <div class="function-wrapper">
-                    <label for="function">f(x): </label>
-                    <math-field id="function"></math-field>
+                    <div class="function">
+                        <label for="function">f(x): </label>
+                        <math-field id="function"></math-field>
+                    </div>
                 </div>
             </div>
             <div class="input">
@@ -64,8 +66,10 @@ $(document).ready(function() {
             inputWrapper.prepend(`
                 <div class="input">
                     <div class="function-wrapper">
-                        <label for="function">f(x): </label>
-                        <math-field id="function"></math-field>
+                        <div class="function">
+                            <label for="function">f(x): </label>
+                            <math-field id="function"></math-field>
+                        </div>
                     </div>
                 </div>
                 <div class="input">
@@ -167,6 +171,10 @@ $(document).ready(function() {
                 break;
             case "newton-raphson":
                 iterations = newtonRaphson(ce, formula, derivative, $("#xi").val(), repetitions);
+                break;
+            case "secant":
+                iterations = secant(ce, formula, $("#xi").val(), repetitions);
+                break;
             default:
                 break;
         }
@@ -392,6 +400,74 @@ function newtonRaphson(ce, formula, derivative, xi, repetitions) {
         ea = Math.abs((xi-xio)/xi) * 100;
         ea = parseFloat(ea.toFixed(4)) + "%";
 
+        iterations.push([xi, ea]);
+    }
+
+    return iterations;
+}
+
+function secant(ce, formula, xi, repetitions) {
+    let iterations = [];
+
+    // Clear table data
+    $(`.table-data`).empty();
+
+    xi = parseFloat(xi);
+    let ea = "100%";
+    iterations = [[xi, ea]];
+
+    let xio = 0;
+
+    /*
+    let fn = ce.parse(formula);
+    fn = fn.subs({x : ce.box(xi)});
+    let fxi = parseFloat(fn.machineValue);
+    fxi = parseFloat(fxi.toFixed(6));
+    console.log(fxi);
+
+    fn = ce.parse(formula);
+    fn = fn.subs({x : ce.box(xio)});
+    let fxio = parseFloat(fn.machineValue);
+    fxio = parseFloat(fxio.toFixed(6));
+    console.log(fxio);
+
+    // Temporary xi
+    let xit = xi - ((fxi * (xio - xi)) / (fxio - fxi));
+    xio = xi;
+    xi = xit.toFixed(6);
+
+    ea = Math.abs((xi-xio)/xi) * 100;
+    console.log(`xi: ${xi}, xio: ${xio}`);
+    ea = parseFloat(ea.toFixed(4)) + "%";
+    console.log(ea);
+
+    iterations.push([xi, ea]);
+    */
+    for (let i = 0; i < repetitions; i++) {
+        if (i == 0) continue;
+        if (i == 1) xio == 0;
+
+        let fn = ce.parse(formula);
+        fn = fn.subs({x : ce.box(xi)});
+        console.log(fn);
+        let fxi = parseFloat(fn.machineValue);
+        fxi = parseFloat(fxi.toFixed(6));
+    
+        fn = ce.parse(formula);
+        fn = fn.subs({x : ce.box(xio)});
+        let fxio = parseFloat(fn.machineValue);
+        fxio = parseFloat(fxio.toFixed(6));
+    
+        // Temporary xi
+        console.log(`xi: ${xi}, xio: ${xio}, fxi: ${fxi}, fxio: ${fxio}`);
+        let xit = xi - ((fxi * (xio - xi)) / (fxio - fxi));
+        xio = xi;
+        xi = xit.toFixed(6);
+        console.log(xi);
+    
+        ea = Math.abs((xi-xio)/xi) * 100;
+        ea = parseFloat(ea.toFixed(4)) + "%";
+    
         iterations.push([xi, ea]);
     }
 
