@@ -4,7 +4,7 @@ $(document).ready(function() {
     let methodButtons = $(".method");
     let methodName = $("#method-name");
 
-    let tableHeaders = ['x<sub>l</sub>', 'x<sub>u</sub>', 'f(x<sub>l</sub>)', 'f(x<sub>u</sub>)', 'x<sub>r</sub>', 'f(x<sub>r</sub>)', 'ε<sub>a</sub>'];
+    let tableHeaders = ['i', 'x<sub>l</sub>', 'x<sub>u</sub>', 'f(x<sub>l</sub>)', 'f(x<sub>u</sub>)', 'x<sub>r</sub>', 'f(x<sub>r</sub>)', 'ε<sub>a</sub>'];
     let results = $("#results");
 
     let hr = $('<tr></tr>');
@@ -61,7 +61,7 @@ $(document).ready(function() {
                 </div>
             </div>`);
 
-            tableHeaders = ['x<sub>l</sub>', 'x<sub>u</sub>', 'f(x<sub>l</sub>)', 'f(x<sub>u</sub>)', 'x<sub>r</sub>', 'f(x<sub>r</sub>)', 'ε<sub>a</sub>'];
+            tableHeaders = ['i', 'x<sub>l</sub>', 'x<sub>u</sub>', 'f(x<sub>l</sub>)', 'f(x<sub>u</sub>)', 'x<sub>r</sub>', 'f(x<sub>r</sub>)', 'ε<sub>a</sub>'];
         } else if (currentMethod == "fixed-point" || currentMethod == "secant") {
             inputWrapper.prepend(`
                 <div class="input">
@@ -86,7 +86,7 @@ $(document).ready(function() {
                         <input id="repetitions" type="number" >
                     </div>
                 </div>`);
-            tableHeaders = ['x<sub>i</sub>', 'ε<sub>a</sub>'];
+            tableHeaders = ['i', 'x<sub>i</sub>', 'ε<sub>a</sub>'];
         } else if (currentMethod == "newton-raphson") {
             inputWrapper.prepend(`
             <div class="input">
@@ -116,7 +116,7 @@ $(document).ready(function() {
                     <input id="repetitions" type="number" >
                 </div>
             </div>`);
-            tableHeaders = ['x<sub>i</sub>', 'ε<sub>a</sub>'];
+            tableHeaders = ['i', 'x<sub>i</sub>', 'ε<sub>a</sub>'];
             derivativeText = $("#derivative");
             derivativeText.on('input', (ev) => {
                 derivative = (ev.target.getValue());
@@ -262,10 +262,8 @@ function bisectionMethod(ce, formula, xli, xui, repetitions) {
 
     let ea = "100%";
 
-    iterations = [[xl, xu, fxl, fxu, xr, fxr, ea]];
+    iterations = [[1, xl, xu, fxl, fxu, xr, fxr, ea]];
     for (let i = 0; i < repetitions; i++) {
-        if (i == 0) continue;
-        
         if (fxl * fxr < 0) xu = xr;
         else if (fxl * fxr > 0) xl = xr;
         else if (fxl * fxr == 0) {
@@ -295,7 +293,7 @@ function bisectionMethod(ce, formula, xli, xui, repetitions) {
 
         ea = calculateApproximateError(xr, xro);
 
-        iterations.push([xl, xu, fxl, fxu, xr, fxr, ea]);
+        iterations.push([i + 2, xl, xu, fxl, fxu, xr, fxr, ea]);
     }
 
     return iterations;
@@ -332,10 +330,8 @@ function falsePositionMethod(ce, formula, xli, xui, repetitions) {
 
     let ea = "100%";
 
-    iterations = [[xl, xu, fxl, fxu, xr, fxr, ea]];
+    iterations = [[1, xl, xu, fxl, fxu, xr, fxr, ea]];
     for (let i = 0; i < repetitions; i++) {
-        if (i == 0) continue;
-        
         if (fxl * fxr < 0) xu = xr;
         else if (fxl * fxr > 0) xl = xr;
         else if (fxl * fxr == 0) {
@@ -365,7 +361,7 @@ function falsePositionMethod(ce, formula, xli, xui, repetitions) {
 
         ea = calculateApproximateError(xr, xro);
 
-        iterations.push([xl, xu, fxl, fxu, xr, fxr, ea]);
+        iterations.push([i + 2, xl, xu, fxl, fxu, xr, fxr, ea]);
     }
 
     return iterations;
@@ -381,7 +377,7 @@ function fixedPoint(ce, formula, xi, repetitions) {
     
     let ea = "100%";
 
-    iterations = [[xi, ea]];
+    iterations = [[1, xi, ea]];
     for (let i = 0; i < repetitions; i++) {
         if (i == 0) continue;
 
@@ -395,7 +391,7 @@ function fixedPoint(ce, formula, xi, repetitions) {
 
         ea = calculateApproximateError(xi, xio);
 
-        iterations.push([xi, ea]);
+        iterations.push([i + 2, xi, ea]);
     }
 
     return iterations;
@@ -410,7 +406,7 @@ function newtonRaphson(ce, formula, derivative, xi, repetitions) {
     xi = parseFloat(xi);
 
     let ea = "100%";
-    iterations = [[xi, ea]];
+    iterations = [[1, xi, ea]];
     for (let i = 0; i < repetitions; i++) {
         if (i == 0) continue;
 
@@ -430,7 +426,7 @@ function newtonRaphson(ce, formula, derivative, xi, repetitions) {
 
         ea = calculateApproximateError(xi, xio);
 
-        iterations.push([xi, ea]);
+        iterations.push([i + 2, xi, ea]);
     }
 
     return iterations;
@@ -444,7 +440,7 @@ function secant(ce, formula, xi, repetitions) {
 
     xi = parseFloat(xi);
     let ea = "100%";
-    iterations = [[xi, ea]];
+    iterations = [[1, xi, ea]];
 
     // xi old
     let xio = 0;
@@ -470,7 +466,7 @@ function secant(ce, formula, xi, repetitions) {
     
         ea = calculateApproximateError(xi, xio);
     
-        iterations.push([xi, ea]);
+        iterations.push([i + 2, xi, ea]);
     }
 
     return iterations;
