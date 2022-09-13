@@ -122,7 +122,41 @@ $(document).ready(function() {
                 derivative = (ev.target.getValue());
             });
 
+        } else if (currentMethod == 'muller') {
+            inputWrapper.prepend(`
+                <div class="input">
+                    <div class="function-wrapper">
+                        <div class="function">
+                            <label for="function">f(x): </label>
+                            <math-field id="function"></math-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="input">
+                    <div class="interval-wrapper">
+                        <div class="interval">
+                            <label for="x0">x<sub>0</sub>: </label>
+                            <input id="x0" type="text">
+                        </div>
+                        <div class="interval">
+                            <label for="x1">x<sub>1</sub>: </label>
+                            <input id="x1" type="text">
+                        </div>
+                        <div class="interval">
+                            <label for="x2">x<sub>2</sub>: </label>
+                            <input id="x2" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="input">
+                    <div class="repetitions-wrapper">
+                        <label for="repetitions">Repetitions: </label>
+                        <input id="repetitions" type="number" >
+                    </div>
+                </div>`);
+            tableHeaders = ['i', 'x<sub>0</sub>', 'x<sub>1</sub>', 'x<sub>2</sub>', 'f(x<sub>0</sub>)', 'f(x<sub>1</sub>)', 'f(x<sub>2</sub>)', 'h<sub>0</sub>', 'h<sub>1</sub>', 'd<sub>0</sub>', 'd<sub>1</sub>', 'a', 'b', 'c', 'x<sub>3</sub>', 'ε<sub>a</sub>'];
         }
+        
         // Re-add action listener
         functionText = $("#function");
         functionText.on('input', (ev) => {
@@ -175,13 +209,16 @@ $(document).ready(function() {
             case "secant":
                 iterations = secant(ce, formula, $("#xi").val(), repetitions);
                 break;
+            case "muller":
+                iterations = muller(ce, formula, [parseFloat($("#x0").val()), parseFloat($("#x1").val()), parseFloat($("#x2").val())], repetitions);
+                break;
             default:
                 break;
         }
         
         for (let i = 0; i < repetitions; i++) {
             let tr = $('<tr class="table-data"></tr>');
-    
+            console.log(iterations);
             iterations[i].forEach(e => {
                 let th = $(`<td>${e}</td>`);
                 tr.append(th);
@@ -256,8 +293,7 @@ function bisectionMethod(ce, formula, xli, xui, repetitions) {
         fxr = fn.machineValue;
         fxr = parseFloat(fxr.toFixed(6));
 
-        ea = Math.abs((xr-xro)/xr) * 100;
-        ea = parseFloat(ea.toFixed(4)) + "%";
+        ea = calculateApproximateError(xr, xro);
 
         iterations.push([xl, xu, fxl, fxu, xr, fxr, ea]);
     }
@@ -327,9 +363,7 @@ function falsePositionMethod(ce, formula, xli, xui, repetitions) {
         fxr = parseFloat(fn.machineValue);
         fxr = parseFloat(fxr.toFixed(6));
 
-
-        ea = Math.abs((xr-xro)/xr) * 100;
-        ea = parseFloat(ea.toFixed(4)) + "%";
+        ea = calculateApproximateError(xr, xro);
 
         iterations.push([xl, xu, fxl, fxu, xr, fxr, ea]);
     }
@@ -359,8 +393,7 @@ function fixedPoint(ce, formula, xi, repetitions) {
         xi = parseFloat(fn.machineValue);
         xi = parseFloat(xi.toFixed(6));
 
-        ea = Math.abs((xi-xio)/xi) * 100;
-        ea = parseFloat(ea.toFixed(4)) + "%";
+        ea = calculateApproximateError(xi, xio);
 
         iterations.push([xi, ea]);
     }
@@ -395,8 +428,7 @@ function newtonRaphson(ce, formula, derivative, xi, repetitions) {
 
         xi = xio - (fxi / dxi);
 
-        ea = Math.abs((xi-xio)/xi) * 100;
-        ea = parseFloat(ea.toFixed(4)) + "%";
+        ea = calculateApproximateError(xi, xio);
 
         iterations.push([xi, ea]);
     }
@@ -414,6 +446,7 @@ function secant(ce, formula, xi, repetitions) {
     let ea = "100%";
     iterations = [[xi, ea]];
 
+    // xi old
     let xio = 0;
 
     for (let i = 0; i < repetitions; i++) {
@@ -435,11 +468,81 @@ function secant(ce, formula, xi, repetitions) {
         xio = xi;
         xi = parseFloat(xit.toFixed(6));
     
-        ea = Math.abs((xi-xio)/xi) * 100;
-        ea = parseFloat(ea.toFixed(4)) + "%";
+        ea = calculateApproximateError(xi, xio);
     
         iterations.push([xi, ea]);
     }
 
     return iterations;
+}
+// $$ x^3-0.5x^2+4x-2 $$
+function muller(ce, formula, x, repetitions) {
+    let iterations = [];
+
+    // Clear table data
+    $(`.table-data`).empty();
+
+    let fn = ce.parse(formula);
+    let fx0 = parseFloat(fn.subs({x : ce.box(x[0])}).machineValue);
+    let fx1 = parseFloat(fn.subs({x : ce.box(x[1])}).machineValue);
+    let fx2 = parseFloat(fn.subs({x : ce.box(x[2])}).machineValue);
+
+    let h0 = parseFloat((x[1] - x[0]).toFixed(6));
+    let h1 = parseFloat((x[2] - x[1]).toFixed(6));
+    let d0 = parseFloat(((fx1 - fx0) / h0).toFixed(6));
+    let d1 = parseFloat(((fx2 - fx1) / h1).toFixed(6));
+
+    let a = parseFloat(((d1 - d0) / (h1 + h0)).toFixed(6));
+    let b = parseFloat((a * h1 + d1).toFixed(6));
+    let c = fx2;
+
+    let x3 = Math.max(x[2] - ((2 * c) / (b + Math.sqrt(Math.pow(b, 2) - (4 * a * c)))), x[2] - ((2 * c) / (b - Math.sqrt(Math.pow(b, 2) - (4 * a * c)))));
+    x3 = parseFloat(x3.toFixed(6));
+    let ea = "100%";
+
+    iterations = [[1, x[0], x[1], x[2], fx0, fx1, fx2, h0, h1, d0, d1, a, b, c, x3, ea]];
+
+    for (let i = 0; i < repetitions; i++) {
+        if (x[0] < x3 && x[1] > x3) {
+            x = [x[0], x3, x[1]];
+        } else if (x[1] < x3 && x[2] > x3) {
+            x = [x[1], x3, x[2]];
+        } else if (x[2] < x3) {
+            x = [x[1], x[2], x3];
+        } else if (x[0] > x3) {
+            x = [x3, x[0], x[1]];
+        }
+
+        fx0 = fn.subs({x : ce.box(x[0])}).machineValue;
+        fx0 = parseFloat(fx0.toFixed(6));
+        fx1 = fn.subs({x : ce.box(x[1])}).machineValue;
+        fx1 = parseFloat(fx1.toFixed(6));
+        fx2 = fn.subs({x : ce.box(x[2])}).machineValue;
+        fx2 = parseFloat(fx2.toFixed(6));
+
+        h0 = parseFloat((x[1] - x[0]).toFixed(6));
+        h1 = parseFloat((x[2] - x[1]).toFixed(6));
+        d0 = parseFloat(((fx1 - fx0) / h0).toFixed(6));
+        d1 = parseFloat(((fx2 - fx1) / h1).toFixed(6));
+        a = parseFloat(((d1 - d0) / (h1 + h0)).toFixed(6));
+        b = parseFloat((a * h1 + d1).toFixed(6));
+        c = fx2;
+
+        let x3o = x3;
+        x3 = Math.max(x[2] - ((2 * c) / (b + Math.sqrt(Math.pow(b, 2) - (4 * a * c)))), x[2] - ((2 * c) / (b - Math.sqrt(Math.pow(b, 2) - (4 * a * c)))));
+        x3 = parseFloat(x3.toFixed(6));
+
+        ea = calculateApproximateError(x3, x3o);
+
+        iterations.push([i + 2, x[0], x[1], x[2], fx0, fx1, fx2, h0, h1, d0, d1, a, b, c, x3, ea]);
+    }
+
+    return iterations;
+}
+
+// xr = approximate root, xro = old approximate root
+function calculateApproximateError(xr, xro) {
+    let e = Math.abs((xr - xro) / xr) * 100;
+    e = parseFloat(e.toFixed(4)) + "%";
+    return e;
 }
