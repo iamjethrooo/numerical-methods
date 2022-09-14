@@ -21,7 +21,7 @@ body {
 }
 
 header {
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 2rem;
@@ -81,6 +81,7 @@ li {
   border-radius: 0.8rem;
   font-size: 1.3rem;
   width: 100%;
+  z-index: 6000;
 }
 .dropdown li {
   padding: 0.5rem 1rem;
@@ -96,12 +97,12 @@ li {
   right: 5rem;
   width: 3rem;
   height: 2rem;
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  z-index: 5000;
+  z-index: 9000;
 }
 
 .bar {
@@ -116,7 +117,7 @@ li {
 }
 
 #menu-toggler:hover > .bar {
-  background-color: black;
+  background-color: grey;
 }
 
 .bar:before,
@@ -131,6 +132,7 @@ li {
 
 /* Make X menu-toggler */
 .bar.open {
+  background-color: white;
   transform: rotate(135deg);
 }
 .bar.open:before, .bar.open:after {
@@ -248,12 +250,51 @@ input {
   background: #eeeeee;
 }
 
-@media only screen and (min-width: 1024px) {
+@media only screen and (max-width: 1024px) {
   #menu-toggler {
-    display: none;
+    display: block;
   }
   header {
+    display: none;
+    gap: 2rem;
+  }
+  header.open {
     display: flex;
+    position: fixed;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100vh;
+    z-index: 5555;
+  }
+  .nav-links {
+    height: 100%;
+  }
+  .menu {
+    display: block;
+    gap: unset;
+    height: 100%;
+    background-color: black;
+  }
+  .menu li {
+    width: 100vw;
+  }
+  .menu li:hover {
+    border-radius: unset;
+  }
+  .menu.open {
+    flex-direction: column;
+  }
+  .dropdown {
+    border-radius: unset;
+    font-size: 1.5rem;
+    display: block;
+    position: relative;
+    background-color: black;
+    width: 100%;
+    height: 100%;
+  }
+  .method-span {
+    display: none;
   }
 }
 

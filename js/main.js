@@ -1,4 +1,15 @@
 $(document).ready(function() {
+    // Hamburger Menu
+    let menuToggler = $("#menu-toggler");
+    let bar = $(".bar");
+
+    menuToggler.on("click", function() {
+        menuToggler.toggleClass("open");
+        bar.toggleClass("open");
+        $("header").toggleClass("open");
+        $(".menu").toggleClass("open");
+    });
+
     let currentMethod = "bisection";
 
     let methodButtons = $(".method");
@@ -86,6 +97,7 @@ $(document).ready(function() {
                         <input id="repetitions" type="number" >
                     </div>
                 </div>`);
+
             tableHeaders = ['i', 'x<sub>i</sub>', 'ε<sub>a</sub>'];
         } else if (currentMethod == "newton-raphson") {
             inputWrapper.prepend(`
@@ -116,7 +128,9 @@ $(document).ready(function() {
                     <input id="repetitions" type="number" >
                 </div>
             </div>`);
+
             tableHeaders = ['i', 'x<sub>i</sub>', 'ε<sub>a</sub>'];
+
             derivativeText = $("#derivative");
             derivativeText.on('input', (ev) => {
                 derivative = (ev.target.getValue());
@@ -154,6 +168,7 @@ $(document).ready(function() {
                         <input id="repetitions" type="number" >
                     </div>
                 </div>`);
+
             tableHeaders = ['i', 'x<sub>0</sub>', 'x<sub>1</sub>', 'x<sub>2</sub>', 'f(x<sub>0</sub>)', 'f(x<sub>1</sub>)', 'f(x<sub>2</sub>)', 'h<sub>0</sub>', 'h<sub>1</sub>', 'd<sub>0</sub>', 'd<sub>1</sub>', 'a', 'b', 'c', 'x<sub>3</sub>', 'ε<sub>a</sub>'];
         }
         
@@ -175,17 +190,6 @@ $(document).ready(function() {
     ce.numericMode = 'machine';
 
     MathLive.renderMathInDocument()
-
-    // Hamburger Menu
-    let menuToggler = $("#menu-toggler");
-    let bar = $(".bar");
-    let topNav = $(".top-nav");
-
-    menuToggler.on("click", function() {
-        menuToggler.toggleClass("open");
-        bar.toggleClass("open");
-        topNav.toggleClass("open");
-    });
 
     let calculate = $("#calculate");
 
