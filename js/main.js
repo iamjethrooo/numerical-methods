@@ -35,6 +35,11 @@ $(document).ready(function() {
 
     // Navbar buttons action listener
     methodButtons.on("click", (b) => {
+        menuToggler.toggleClass("open");
+        bar.toggleClass("open");
+        $("header").toggleClass("open");
+        $(".menu").toggleClass("open");
+
         if (b.target.id == currentMethod) return;
         currentMethod = b.target.id;
         methodName.text(b.target.textContent);
@@ -179,7 +184,7 @@ $(document).ready(function() {
         });
 
         results.empty();
-        hr = $('<tr></tr>');
+        hr = $('<tr class="table-header"></tr>');
         tableHeaders.forEach(e => {
             hr.append($(`<th>${e}</th>`));
         });

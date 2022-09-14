@@ -214,6 +214,7 @@ input {
     font-size: 2rem;
     height: 3.5rem;
     padding: 0rem 1rem;
+    width: 100%;
 }
 
 .interval-wrapper {
@@ -227,20 +228,31 @@ input {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 0 2.5rem;
+    // padding: 0 2.5rem;
     input {
         flex-grow: 100;
     }
 }
 
+.repetitions-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.results-wrapper {
+    width: 60vw;
+    max-height: 80vh;
+    margin: 2.5rem 0;
+    overflow: auto;
+}
+
 #results{
     border-collapse: collapse;
-    margin: 2.5rem 0;
-    min-width: 60vw;
+    width: 100%;
     box-shadow: 0 0 2rem rgba(0, 0, 0, 0.15);
     border-bottom: 1px solid #dddddd;
     text-align: left;
-
+    overflow-x: auto;
     th, td {
         padding: 0.8rem 1rem;
     }
@@ -251,11 +263,42 @@ input {
     }
 }
 
+th {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    top: 0;
+}
+
+th:first-child {
+    left: 0;
+    position: sticky;
+    z-index: 2;
+}
+
+td:first-child {
+    background-color: inherit;
+    position: sticky;
+    left: 0;
+    z-index: 2000;
+}
+
+#table-header {
+    position: sticky;
+    top: 0;
+}
+
+.table-data {
+    background: white;
+}
+
 .table-data:nth-of-type(even) {
     background: #eeeeee;
 }
 
 @media only screen and (max-width: 1024px) {
+    main {
+        width: 100vw;
+    }
     #menu-toggler {
         display: block;
     }
@@ -303,5 +346,13 @@ input {
 
     .method-span {
         display: none;
+    }
+
+    .input-wrapper {
+        width: 70%;
+    }
+
+    .results-wrapper {
+        width: 80vw;
     }
 }
