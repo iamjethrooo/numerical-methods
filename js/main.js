@@ -457,8 +457,6 @@ function fixedPoint(ce, formula, xi, repetitions) {
 
     iterations = [[1, xi, ea]];
     for (let i = 0; i < repetitions; i++) {
-        if (i == 0) continue;
-
         // xi old
         let xio = xi;
 
@@ -486,8 +484,6 @@ function newtonRaphson(ce, formula, derivative, xi, repetitions) {
     let ea = "100%";
     iterations = [[1, xi, ea]];
     for (let i = 0; i < repetitions; i++) {
-        if (i == 0) continue;
-
         let xio = xi;
 
         let fn = ce.parse(formula);
