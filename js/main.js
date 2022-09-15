@@ -78,7 +78,7 @@ $(document).ready(function() {
             </div>`);
 
             tableHeaders = ['i', 'x<sub>l</sub>', 'x<sub>u</sub>', 'f(x<sub>l</sub>)', 'f(x<sub>u</sub>)', 'x<sub>r</sub>', 'f(x<sub>r</sub>)', 'ε<sub>a</sub>'];
-        } else if (currentMethod == "fixed-point" || currentMethod == "secant") {
+        } else if (currentMethod == "fixed-point") {
             inputWrapper.prepend(`
                 <div class="input">
                     <div class="function-wrapper">
@@ -93,6 +93,36 @@ $(document).ready(function() {
                         <div class="interval">
                             <label for="xi">x<sub>i</sub>: </label>
                             <input id="xi" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="input">
+                    <div class="repetitions-wrapper">
+                        <label for="repetitions">Repetitions: </label>
+                        <input id="repetitions" type="number" >
+                    </div>
+                </div>`);
+
+            tableHeaders = ['i', 'x<sub>i</sub>', 'ε<sub>a</sub>'];
+        } else if (currentMethod == "secant") {
+            inputWrapper.prepend(`
+                <div class="input">
+                    <div class="function-wrapper">
+                        <div class="function">
+                            <label for="function">f(x): </label>
+                            <math-field id="function"></math-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="input">
+                    <div class="interval-wrapper">
+                        <div class="interval">
+                            <label for="x0">x<sub>0</sub>: </label>
+                            <input id="x0" type="text">
+                        </div>
+                        <div class="interval">
+                            <label for="x1">x<sub>1</sub>: </label>
+                            <input id="x1" type="text">
                         </div>
                     </div>
                 </div>
@@ -175,7 +205,47 @@ $(document).ready(function() {
                 </div>`);
 
             tableHeaders = ['i', 'x<sub>0</sub>', 'x<sub>1</sub>', 'x<sub>2</sub>', 'f(x<sub>0</sub>)', 'f(x<sub>1</sub>)', 'f(x<sub>2</sub>)', 'h<sub>0</sub>', 'h<sub>1</sub>', 'd<sub>0</sub>', 'd<sub>1</sub>', 'a', 'b', 'c', 'x<sub>3</sub>', 'ε<sub>a</sub>'];
+        } else if (currentMethod == 'bairstow') {
+            inputWrapper.prepend(`
+            <div class="input">
+                <div class="function-wrapper">
+                    <div class="function">
+                        <label for="function">f(x): </label>
+                        <math-field id="function"></math-field>
+                    </div>
+                </div>
+            </div>
+            <div class="input">
+                <div class="coefficient-count-wrapper">
+                    <label for="coefficient-count">Coefficient count: </label>
+                    <input id="coefficient-count" type="number" >
+                </div>
+            </div>
+            <div class="input">
+                <div class="coefficient-wrapper">
+                </div>
+            </div>
+            <div class="input">
+                <div class="repetitions-wrapper">
+                    <label for="repetitions">Repetitions: </label>
+                    <input id="repetitions" type="number" >
+                </div>
+            </div>`);
         }
+
+        $("#coefficient-count").on('input', e => {
+            $(".coefficient-wrapper").empty();
+            let coefficientCount = $("#coefficient-count").val();
+            for (let i = 0; i < coefficientCount; i++) {
+                $(".coefficient-wrapper").append(`
+                <div class="interval">
+                    <label for="a${i}">a<sub>${i}</sub>: </label>
+                    <input id="a${i}" type="text">
+                </div>
+                `);
+            }
+  
+        });
         
         // Re-add action listener
         functionText = $("#function");
@@ -200,7 +270,6 @@ $(document).ready(function() {
 
     calculate.on("click", () => {
         let iterations = [];
-
         let repetitions = $("#repetitions").val();
         switch(currentMethod) {
             case "bisection":
@@ -216,7 +285,7 @@ $(document).ready(function() {
                 iterations = newtonRaphson(ce, formula, derivative, $("#xi").val(), repetitions);
                 break;
             case "secant":
-                iterations = secant(ce, formula, $("#xi").val(), repetitions);
+                iterations = secant(ce, formula, $("#x1").val(), $("#x0").val(), repetitions);
                 break;
             case "muller":
                 iterations = muller(ce, formula, [parseFloat($("#x0").val()), parseFloat($("#x1").val()), parseFloat($("#x2").val())], repetitions);
@@ -441,23 +510,18 @@ function newtonRaphson(ce, formula, derivative, xi, repetitions) {
     return iterations;
 }
 
-function secant(ce, formula, xi, repetitions) {
+function secant(ce, formula, xi, xio, repetitions) {
     let iterations = [];
 
     // Clear table data
     $(`.table-data`).empty();
 
     xi = parseFloat(xi);
+    xio = parseFloat(xio);
     let ea = "100%";
     iterations = [[1, xi, ea]];
 
-    // xi old
-    let xio = 0;
-
     for (let i = 0; i < repetitions; i++) {
-        if (i == 0) continue;
-        if (i == 1) xio == 0;
-
         let fn = ce.parse(formula);
         fn = fn.subs({x : ce.box(xi)});
         let fxi = parseFloat(fn.machineValue);
@@ -550,4 +614,8 @@ function calculateApproximateError(xr, xro) {
     let e = Math.abs((xr - xro) / xr) * 100;
     e = parseFloat(e.toFixed(4)) + "%";
     return e;
+}
+
+function bairstow(ce, formula, coefficientCount, a, repetitions) {
+
 }
