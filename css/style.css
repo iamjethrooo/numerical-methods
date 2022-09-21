@@ -214,25 +214,28 @@ input {
   width: 100%;
 }
 
-.interval-wrapper {
+.interval-wrapper, .highest-degree-wrapper {
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
 
-.interval {
+.interval, .highest-degree {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 }
-.interval input {
+.interval input, .highest-degree input {
   flex-grow: 100;
 }
 
-.repetitions-wrapper {
+.repetitions-wrapper, .highest-degree-count-wrapper {
   display: flex;
   justify-content: space-between;
+}
+.repetitions-wrapper input, .highest-degree-count-wrapper input {
+  width: 60%;
 }
 
 .results-wrapper {
@@ -335,6 +338,9 @@ td:first-child {
     background-color: black;
     width: 100%;
     height: 100%;
+  }
+  #method-name {
+    margin-top: 10rem;
   }
   .method-span {
     display: none;

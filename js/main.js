@@ -216,13 +216,13 @@ $(document).ready(function() {
                 </div>
             </div>
             <div class="input">
-                <div class="coefficient-count-wrapper">
-                    <label for="coefficient-count">Coefficient count: </label>
-                    <input id="coefficient-count" type="number" >
+                <div class="highest-degree-count-wrapper">
+                    <label for="highest-degree-count">Highest degree count: </label>
+                    <input id="highest-degree-count" type="number" >
                 </div>
             </div>
             <div class="input">
-                <div class="coefficient-wrapper">
+                <div class="highest-degree-wrapper">
                 </div>
             </div>
             <div class="input">
@@ -233,11 +233,11 @@ $(document).ready(function() {
             </div>`);
         }
 
-        $("#coefficient-count").on('input', e => {
-            $(".coefficient-wrapper").empty();
-            let coefficientCount = $("#coefficient-count").val();
-            for (let i = 0; i < coefficientCount; i++) {
-                $(".coefficient-wrapper").append(`
+        $("#highest-degree-count").on('input', e => {
+            $(".highest-degree-wrapper").empty();
+            let highestDegreeCount = $("#highest-degree-count").val();
+            for (let i = 0; i < highestDegreeCount; i++) {
+                $(".highest-degree-wrapper").append(`
                 <div class="interval">
                     <label for="a${i}">a<sub>${i}</sub>: </label>
                     <input id="a${i}" type="text">
@@ -612,6 +612,6 @@ function calculateApproximateError(xr, xro) {
     return e;
 }
 
-function bairstow(ce, formula, coefficientCount, a, repetitions) {
+function bairstow(ce, formula, highestDegreeCount, a, repetitions) {
 
 }
