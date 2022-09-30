@@ -216,6 +216,19 @@ $(document).ready(function() {
                 </div>
             </div>
             <div class="input">
+                <div class="rs-wrapper">
+                    <div class="rs">
+                        <label for="r">r: </label>
+                        <input id="r" type="number">
+                    </div>
+                    <div class="rs">
+                        <label for="s">s: </label>
+                        <input id="s" type="number">
+                    </div>
+                </div>
+            </div>
+            <div class="input">
+            <div class="input">
                 <div class="highest-degree-count-wrapper">
                     <label for="highest-degree-count">Highest degree count: </label>
                     <input id="highest-degree-count" type="number" >
@@ -236,11 +249,11 @@ $(document).ready(function() {
         $("#highest-degree-count").on('input', e => {
             $(".highest-degree-wrapper").empty();
             let highestDegreeCount = $("#highest-degree-count").val();
-            for (let i = 0; i < highestDegreeCount; i++) {
+            for (let i = 0; i <= highestDegreeCount; i++) {
                 $(".highest-degree-wrapper").append(`
                 <div class="interval">
                     <label for="a${i}">a<sub>${i}</sub>: </label>
-                    <input id="a${i}" type="text">
+                    <input class="bairstow-coefficient" id="a${i}" type="text">
                 </div>
                 `);
             }
@@ -289,6 +302,15 @@ $(document).ready(function() {
                 break;
             case "muller":
                 iterations = muller(ce, formula, [parseFloat($("#x0").val()), parseFloat($("#x1").val()), parseFloat($("#x2").val())], repetitions);
+                break;
+            case "bairstow":
+                ax = [];
+                $(".bairstow-coefficient").each(function(i, obj) {
+                    ax.push(parseFloat(obj.value));
+                })
+                console.log(ax);
+                // ce, formula, a, r, s, repetitions
+                iterations = bairstow(ce, formula, ax, parseFloat($("#r").val()), parseFloat($("#s").val()), repetitions)
                 break;
             default:
                 break;
@@ -612,6 +634,41 @@ function calculateApproximateError(xr, xro) {
     return e;
 }
 
-function bairstow(ce, formula, highestDegreeCount, a, repetitions) {
+function bairstow(ce, formula, a, r, s, repetitions) {
+    let iterations = [];
 
+    // Clear table data
+    $(`.table-data`).empty();
+
+    let fn = ce.parse(formula);
+    let length = a.length - 1;
+    let an = a;
+    let bn = [];
+    let cn = [];
+    for (let i = length; i >= 0; i--) {
+        if (i == length) {
+            bn[i] = (an[length]);
+            continue;
+        } 
+        if (i == length - 1) {
+            bn[i] = parseFloat(((r * bn[i + 1]) + an[i]).toFixed(6));
+            continue;
+        }
+        bn[i] = parseFloat((an[i] + (r * bn[i + 1]) + (s * bn[i + 2])).toFixed(6));
+    }
+
+    for (let i = length; i >= 0; i--) {
+        if (i == length) {
+            cn[i] = (bn[i]);
+            continue;
+        } 
+        if (i == length - 1) {
+            cn[i] = parseFloat(((r * cn[i + 1]) + bn[i]).toFixed(6));
+            continue;
+        }
+        cn[i] = parseFloat((bn[i] + (r * cn[i + 1]) + (s * cn[i + 2])).toFixed(6));
+    }
+    console.log(bn);
+    console.log(cn);
+    return iterations;
 }

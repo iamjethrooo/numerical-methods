@@ -214,19 +214,19 @@ input {
   width: 100%;
 }
 
-.interval-wrapper, .highest-degree-wrapper {
+.interval-wrapper, .highest-degree-wrapper, .rs-wrapper {
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
 
-.interval, .highest-degree {
+.interval, .highest-degree, .rs {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 }
-.interval input, .highest-degree input {
+.interval input, .highest-degree input, .rs input {
   flex-grow: 100;
 }
 
