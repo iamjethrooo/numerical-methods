@@ -341,15 +341,15 @@ function bisectionMethod(ce, formula, xli, xui, repetitions) {
     let xl = parseFloat(xli);
     let xu = parseFloat(xui);
 
-    
+    console.log(formula);
     let fn = ce.parse(formula);
     fn = fn.subs({x: ce.box(xl)});
-    let fxl = fn.machineValue;
+    let fxl = fn.N().machineValue;
     fxl = parseFloat(fxl.toFixed(6));
 
     fn = ce.parse(formula);
     fn = fn.subs({x: ce.box(xu)});
-    let fxu  = fn.machineValue;
+    let fxu  = fn.N().machineValue;
     fxu = parseFloat(fxu.toFixed(6));
 
     let xr = (xl + xu) / 2;
@@ -357,7 +357,7 @@ function bisectionMethod(ce, formula, xli, xui, repetitions) {
 
     fn = ce.parse(formula);
     fn = fn.subs({x: ce.box(xr)});
-    let fxr = fn.machineValue;
+    let fxr = fn.N().machineValue;
     fxr = parseFloat(fxr.toFixed(6));
 
     let ea = "100%";
@@ -372,12 +372,12 @@ function bisectionMethod(ce, formula, xli, xui, repetitions) {
 
         fn = ce.parse(formula);
         fn = fn.subs({x: ce.box(xl)});
-        fxl = fn.machineValue;
+        fxl = fn.N().machineValue;
         fxl = parseFloat(fxl.toFixed(6));
 
         fn = ce.parse(formula);
         fn = fn.subs({x: ce.box(xu)});
-        fxu  = fn.machineValue;
+        fxu  = fn.N().machineValue;
         fxu = parseFloat(fxu.toFixed(6));
 
         // xr old
@@ -388,7 +388,7 @@ function bisectionMethod(ce, formula, xli, xui, repetitions) {
 
         fn = ce.parse(formula);
         fn = fn.subs({x: ce.box(xr)});
-        fxr = fn.machineValue;
+        fxr = fn.N().machineValue;
         fxr = parseFloat(fxr.toFixed(6));
 
         ea = calculateApproximateError(xr, xro);
@@ -412,12 +412,12 @@ function falsePositionMethod(ce, formula, xli, xui, repetitions) {
     
     let fn = ce.parse(formula);
     fn = fn.subs({x: ce.box(xl)});
-    let fxl = fn.machineValue;
+    let fxl = fn.N().machineValue;
     fxl = parseFloat(fxl.toFixed(6));
 
     fn = ce.parse(formula);
     fn = fn.subs({x: ce.box(xu)});
-    let fxu  = fn.machineValue;
+    let fxu  = fn.N().machineValue;
     fxu = parseFloat(fxu.toFixed(6));
 
     let xr = xu - ((fxu * (xl - xu)) / (fxl - fxu));
@@ -425,7 +425,7 @@ function falsePositionMethod(ce, formula, xli, xui, repetitions) {
 
     fn = ce.parse(formula);
     fn = fn.subs({x: ce.box(xr)});
-    let fxr = parseFloat(fn.machineValue);
+    let fxr = parseFloat(fn.N().machineValue);
     fxr = parseFloat(fxr.toFixed(6));
 
     let ea = "100%";
@@ -440,12 +440,12 @@ function falsePositionMethod(ce, formula, xli, xui, repetitions) {
 
         fn = ce.parse(formula);
         fn = fn.subs({x: ce.box(xl)});
-        fxl = parseFloat(fn.machineValue);
+        fxl = parseFloat(fn.N().machineValue);
         fxl = parseFloat(fxl.toFixed(6));
 
         fn = ce.parse(formula);
         fn = fn.subs({x: ce.box(xu)});
-        fxu = parseFloat(fn.machineValue);
+        fxu = parseFloat(fn.N().machineValue);
         fxu = parseFloat(fxu.toFixed(6));
 
         // xr old
@@ -456,7 +456,7 @@ function falsePositionMethod(ce, formula, xli, xui, repetitions) {
 
         fn = ce.parse(formula);
         fn = fn.subs({x: ce.box(xr)});
-        fxr = parseFloat(fn.machineValue);
+        fxr = parseFloat(fn.N().machineValue);
         fxr = parseFloat(fxr.toFixed(6));
 
         ea = calculateApproximateError(xr, xro);
@@ -484,7 +484,7 @@ function fixedPoint(ce, formula, xi, repetitions) {
 
         let fn = ce.parse(formula);
         fn = fn.subs({x: ce.box(xi)});
-        xi = parseFloat(fn.machineValue);
+        xi = parseFloat(fn.N().machineValue);
         xi = parseFloat(xi.toFixed(6));
 
         ea = calculateApproximateError(xi, xio);
@@ -510,12 +510,12 @@ function newtonRaphson(ce, formula, derivative, xi, repetitions) {
 
         let fn = ce.parse(formula);
         fn = fn.subs({x : ce.box(xi)});
-        let fxi = parseFloat(fn.machineValue);
+        let fxi = parseFloat(fn.N().machineValue);
         fxi = parseFloat(fxi.toFixed(6));
 
         fn = ce.parse(derivative);
         fn = fn.subs({x : ce.box(xi)});
-        let dxi = parseFloat(fn.machineValue);
+        let dxi = parseFloat(fn.N().machineValue);
         dxi = parseFloat(dxi.toFixed(6));
 
         xi = xio - (fxi / dxi);
@@ -542,12 +542,12 @@ function secant(ce, formula, xi, xio, repetitions) {
     for (let i = 0; i < repetitions; i++) {
         let fn = ce.parse(formula);
         fn = fn.subs({x : ce.box(xi)});
-        let fxi = parseFloat(fn.machineValue);
+        let fxi = parseFloat(fn.N().machineValue);
         fxi = parseFloat(fxi.toFixed(6));
     
         fn = ce.parse(formula);
         fn = fn.subs({x : ce.box(xio)});
-        let fxio = parseFloat(fn.machineValue);
+        let fxio = parseFloat(fn.N().machineValue);
         fxio = parseFloat(fxio.toFixed(6));
     
         // Temporary xi
